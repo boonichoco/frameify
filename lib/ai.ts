@@ -43,7 +43,7 @@ export async function transformToArtStyle(
     quality: "high",
   });
 
-  const b64 = response.data[0]?.b64_json;
+  const b64 = response.data?.[0]?.b64_json;
   if (!b64) throw new Error("OpenAI n'a retourné aucun résultat");
 
   return Buffer.from(b64, "base64");
