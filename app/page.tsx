@@ -1,65 +1,251 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import UploadZone from "@/components/UploadZone";
+import FramePreview from "@/components/FramePreview";
+import ProductConfigurator from "@/components/ProductConfigurator";
+import CheckoutButton from "@/components/CheckoutButton";
+import { FrameOption, ProductConfig, computePrice } from "@/types";
+
+const DEFAULT_OPTIONS: FrameOption = {
+  size: "30x30",
+  finish: "mat",
+  color: "noir",
+  passepartout: "oui",
+};
+
+type Step = "upload" | "result";
 
 export default function Home() {
+  const [step, setStep] = useState<Step>("upload");
+  const [originalUrl, setOriginalUrl] = useState<string | null>(null);
+  const [transformedUrl, setTransformedUrl] = useState<string | null>(null);
+  const [isTransforming, setIsTransforming] = useState(false);
+  const [options, setOptions] = useState<FrameOption>(DEFAULT_OPTIONS);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleUpload = useCallback(async (file: File, previewUrl: string) => {
+    setOriginalUrl(previewUrl);
+    setTransformedUrl(null);
+    setError(null);
+    setIsTransforming(true);
+    setStep("result");
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await fetch("/api/transform", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setTransformedUrl(data.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur de transformation");
+      setTransformedUrl(previewUrl);
+    } finally {
+      setIsTransforming(false);
+    }
+  }, []);
+
+  const productConfig: ProductConfig = {
+    ...options,
+    originalImageUrl: originalUrl ?? "",
+    transformedImageUrl: transformedUrl ?? "",
+    price: computePrice(options),
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+    <div style={{ background: "var(--bg)", minHeight: "100vh" }}>
+      {/* Navbar */}
+      <nav
+        style={{ borderBottom: "1px solid var(--border)" }}
+        className="flex items-center justify-between px-8 py-5"
+      >
+        <span
+          className="font-serif text-xl tracking-[0.15em]"
+          style={{ color: "var(--fg)", fontWeight: 400 }}
+        >
+          FRAMEIFY
+        </span>
+        <div className="flex items-center gap-8">
+          <span className="hidden sm:block text-xs tracking-widest uppercase" style={{ color: "var(--muted)" }}>
+            Édition 2025
+          </span>
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#configurateur"
+            className="text-xs tracking-widest uppercase px-5 py-2.5 transition-all duration-200 hover:opacity-70"
+            style={{
+              border: "1px solid var(--fg)",
+              color: "var(--fg)",
+              letterSpacing: "0.12em",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
+            Commander
           </a>
         </div>
-      </main>
+      </nav>
+
+      <AnimatePresence mode="wait">
+        {step === "upload" ? (
+          <motion.section
+            key="hero"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5 }}
+            className="px-8 pt-24 pb-20 max-w-5xl mx-auto"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+              {/* Texte */}
+              <div>
+                <p
+                  className="text-xs tracking-widest uppercase mb-8"
+                  style={{ color: "var(--muted)" }}
+                >
+                  Intelligence artificielle · Impression fine art
+                </p>
+                <h1
+                  className="font-serif leading-[1.1] mb-7"
+                  style={{
+                    fontSize: "clamp(2.8rem, 5vw, 4.2rem)",
+                    fontWeight: 300,
+                    color: "var(--fg)",
+                  }}
+                >
+                  Votre photo,
+                  <br />
+                  <em style={{ fontStyle: "italic", fontWeight: 400 }}>
+                    réinventée
+                  </em>
+                  <br />
+                  en œuvre d&rsquo;art.
+                </h1>
+                <p
+                  className="text-base leading-loose mb-10 max-w-xs"
+                  style={{ color: "var(--muted)", lineHeight: 1.75 }}
+                >
+                  Notre IA transforme votre photo en illustration
+                  style dessin ou bande dessinée. Encadrée, imprimée
+                  sur papier fine art, livrée chez vous.
+                </p>
+                <div
+                  className="flex items-start gap-8 pt-8"
+                  style={{ borderTop: "1px solid var(--border)" }}
+                >
+                  {[
+                    { value: "2 341", label: "cadres livrés" },
+                    { value: "4.9 / 5", label: "note client" },
+                    { value: "100%", label: "remboursé si insatisfait" },
+                  ].map((s) => (
+                    <div key={s.label}>
+                      <div
+                        className="font-serif text-2xl mb-0.5"
+                        style={{ fontWeight: 400, color: "var(--fg)" }}
+                      >
+                        {s.value}
+                      </div>
+                      <div className="text-xs" style={{ color: "var(--muted)" }}>
+                        {s.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Upload */}
+              <div id="configurateur">
+                <UploadZone onUpload={handleUpload} isLoading={isTransforming} />
+              </div>
+            </div>
+          </motion.section>
+        ) : (
+          <motion.section
+            key="result"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="px-8 pt-10 pb-24 max-w-5xl mx-auto"
+            id="configurateur"
+          >
+            {/* Breadcrumb */}
+            <div
+              className="flex items-center gap-4 mb-12 pb-6"
+              style={{ borderBottom: "1px solid var(--border)" }}
+            >
+              <button
+                onClick={() => {
+                  setStep("upload");
+                  setOriginalUrl(null);
+                  setTransformedUrl(null);
+                }}
+                className="flex items-center gap-2 text-xs tracking-widest uppercase transition-opacity hover:opacity-50"
+                style={{ color: "var(--muted)" }}
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 12H5m7-7l-7 7 7 7" />
+                </svg>
+                Nouvelle photo
+              </button>
+              <span style={{ color: "var(--border)" }}>/</span>
+              <span
+                className="text-xs tracking-widest uppercase"
+                style={{ color: "var(--fg)" }}
+              >
+                Configuration du cadre
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-16 items-start">
+              <div className="flex flex-col gap-4">
+                <FramePreview
+                  originalUrl={originalUrl}
+                  transformedUrl={transformedUrl}
+                  isTransforming={isTransforming}
+                  frameColor={options.color}
+                  passepartout={options.passepartout}
+                  size={options.size}
+                />
+                {error && (
+                  <p className="text-xs text-center mt-2" style={{ color: "#B0403A" }}>{error}</p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-10">
+                <ProductConfigurator options={options} onChange={setOptions} />
+                <CheckoutButton
+                  config={productConfig}
+                  disabled={isTransforming || !transformedUrl}
+                />
+              </div>
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
+
+      {/* Footer */}
+      <footer
+        style={{ borderTop: "1px solid var(--border)" }}
+        className="px-8 py-8"
+      >
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span
+            className="font-serif tracking-[0.15em]"
+            style={{ color: "var(--muted)", fontSize: "0.8rem" }}
+          >
+            FRAMEIFY
+          </span>
+          <div
+            className="flex items-center gap-6 text-xs tracking-widest uppercase"
+            style={{ color: "var(--muted)" }}
+          >
+            <span>Fabriqué en Europe</span>
+            <span style={{ color: "var(--border)" }}>·</span>
+            <span>Fine art 300g</span>
+            <span style={{ color: "var(--border)" }}>·</span>
+            <span>Livraison 5–7 jours</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
