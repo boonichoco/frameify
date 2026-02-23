@@ -25,12 +25,18 @@ export async function POST(req: NextRequest) {
 
     const pngBuffer = await transformToArtStyle(buffer, file.type);
 
-    // Upload du PNG 1024px sur Vercel Blob — URL courte pour preview + metadata Stripe
-    const filename = `preview-${Date.now()}.png`;
-    const { url } = await put(filename, pngBuffer, {
-      access: "public",
-      contentType: "image/png",
-    });
+    // Upload sur Vercel Blob si le token est disponible, sinon data URL
+    let url: string;
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const filename = `preview-${Date.now()}.png`;
+      const result = await put(filename, pngBuffer, {
+        access: "public",
+        contentType: "image/png",
+      });
+      url = result.url;
+    } else {
+      url = `data:image/png;base64,${pngBuffer.toString("base64")}`;
+    }
 
     return NextResponse.json({ url });
   } catch (err) {
