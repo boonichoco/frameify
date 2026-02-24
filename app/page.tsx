@@ -6,7 +6,7 @@ import UploadZone from "@/components/UploadZone";
 import FramePreview from "@/components/FramePreview";
 import ProductConfigurator from "@/components/ProductConfigurator";
 import CheckoutButton from "@/components/CheckoutButton";
-import { FrameOption, ProductConfig, computePrice } from "@/types";
+import { ArtStyle, FrameOption, ProductConfig, computePrice } from "@/types";
 
 const DEFAULT_OPTIONS: FrameOption = {
   size: "30x30",
@@ -23,6 +23,7 @@ export default function Home() {
   const [transformedUrl, setTransformedUrl] = useState<string | null>(null);
   const [isTransforming, setIsTransforming] = useState(false);
   const [options, setOptions] = useState<FrameOption>(DEFAULT_OPTIONS);
+  const [artStyle, setArtStyle] = useState<ArtStyle>("ghibli");
   const [error, setError] = useState<string | null>(null);
 
   const handleUpload = useCallback(async (file: File, previewUrl: string) => {
@@ -34,6 +35,7 @@ export default function Home() {
     try {
       const formData = new FormData();
       formData.append("image", file);
+      formData.append("style", artStyle);
       const res = await fetch("/api/transform", { method: "POST", body: formData });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -151,8 +153,62 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Upload */}
-              <div id="configurateur">
+              {/* Style + Upload */}
+              <div id="configurateur" className="flex flex-col gap-6">
+                <div>
+                  <p
+                    className="text-xs tracking-widest uppercase mb-3"
+                    style={{ color: "var(--muted)" }}
+                  >
+                    Style artistique
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {([
+                      {
+                        value: "ghibli" as ArtStyle,
+                        label: "Ghibli",
+                        desc: "Aquarelle douce, trait Miyazaki",
+                      },
+                      {
+                        value: "flat" as ArtStyle,
+                        label: "Illustration Flat",
+                        desc: "Formes nettes, couleurs pastel",
+                      },
+                    ]).map((s) => {
+                      const selected = artStyle === s.value;
+                      return (
+                        <button
+                          key={s.value}
+                          onClick={() => setArtStyle(s.value)}
+                          className="text-left px-4 py-3 transition-all duration-200"
+                          style={{
+                            background: selected ? "#1A1917" : "#FFFFFF",
+                            color: selected ? "#FFFFFF" : "#1A1917",
+                            border: selected
+                              ? "2px solid #1A1917"
+                              : "2px solid var(--border)",
+                            borderRadius: 8,
+                          }}
+                        >
+                          <span
+                            className="block text-sm"
+                            style={{ fontWeight: selected ? 600 : 400 }}
+                          >
+                            {s.label}
+                          </span>
+                          <span
+                            className="block text-xs mt-0.5"
+                            style={{
+                              color: selected ? "rgba(255,255,255,0.7)" : "var(--muted)",
+                            }}
+                          >
+                            {s.desc}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
                 <UploadZone onUpload={handleUpload} isLoading={isTransforming} />
               </div>
             </div>

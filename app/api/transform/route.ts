@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { transformToArtStyle } from "@/lib/ai";
+import type { ArtStyle } from "@/types";
 
 // OpenAI peut prendre 30-60s — on monte la limite à 60s (Vercel hobby)
 export const maxDuration = 60;
@@ -20,11 +21,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Image trop lourde (max 20 Mo)" }, { status: 400 });
     }
 
+    const style = (formData.get("style") as ArtStyle) || "ghibli";
+
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    console.log("[/api/transform] Appel OpenAI...");
-    const pngBuffer = await transformToArtStyle(buffer, file.type);
+    console.log("[/api/transform] Appel OpenAI, style:", style);
+    const pngBuffer = await transformToArtStyle(buffer, file.type, style);
     console.log("[/api/transform] OpenAI OK, buffer size:", pngBuffer.length);
 
     // Upload sur Vercel Blob si disponible, sinon fallback data URL

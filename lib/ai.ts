@@ -1,4 +1,5 @@
 import OpenAI, { toFile } from "openai";
+import type { ArtStyle } from "@/types";
 
 /**
  * Transforme une image en illustration artistique via OpenAI gpt-image-1.
@@ -8,20 +9,35 @@ import OpenAI, { toFile } from "openai";
  * Sans OPENAI_API_KEY → mode mock (retourne l'image originale après 1.5s)
  */
 
-const ART_PROMPT =
-  "Transform this photo into Studio Ghibli anime style. " +
-  "Stay as faithful as possible to the original image: " +
-  "keep every person, object, animal and element exactly where they are, " +
-  "preserve the exact framing, angles, proportions and spatial relationships, " +
-  "keep the same lighting direction and atmosphere. " +
-  "Only change the visual rendering: apply soft watercolor painting, " +
-  "hand-drawn illustration style with clean outlines, " +
-  "and the warm natural colour palette typical of Hayao Miyazaki films. " +
-  "Do not add, remove or move any element from the original scene.";
+const PROMPTS: Record<ArtStyle, string> = {
+  ghibli:
+    "Transform this photo into Studio Ghibli anime style. " +
+    "Stay as faithful as possible to the original image: " +
+    "keep every person, object, animal and element exactly where they are, " +
+    "preserve the exact framing, angles, proportions and spatial relationships, " +
+    "keep the same lighting direction and atmosphere. " +
+    "Only change the visual rendering: apply soft watercolor painting, " +
+    "hand-drawn illustration style with clean outlines, " +
+    "and the warm natural colour palette typical of Hayao Miyazaki films. " +
+    "Do not add, remove or move any element from the original scene.",
+
+  flat:
+    "Transform this photo into a flat illustration style. " +
+    "Stay as faithful as possible to the original image: " +
+    "keep every person, object, animal and element exactly where they are, " +
+    "preserve the exact framing, angles, proportions and spatial relationships. " +
+    "Only change the visual rendering: use warm, slightly pastel colours, " +
+    "simple stylised shadows with minimal gradients, " +
+    "clean sharp vector-like shapes with smooth edges, " +
+    "a soft and simplified perspective, " +
+    "and a sunny, idealised atmosphere. " +
+    "Do not add, remove or move any element from the original scene.",
+};
 
 export async function transformToArtStyle(
   imageBuffer: Buffer,
-  mimeType = "image/jpeg"
+  mimeType = "image/jpeg",
+  style: ArtStyle = "ghibli"
 ): Promise<Buffer> {
   // Mode mock — pas de clé API
   if (!process.env.OPENAI_API_KEY) {
@@ -37,7 +53,7 @@ export async function transformToArtStyle(
   const response = await openai.images.edit({
     model: "gpt-image-1",
     image: imageFile,
-    prompt: ART_PROMPT,
+    prompt: PROMPTS[style],
     n: 1,
     size: "1024x1024",
     quality: "medium",
