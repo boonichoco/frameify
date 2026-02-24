@@ -2,9 +2,8 @@
  * Prodigi Print API v4.0
  * Docs : https://www.prodigi.com/print-api/docs/reference/
  *
- * SKU format :
- *   GLOBAL-CFP-{size}   → Classic Frame (sans passepartout)
- *   GLOBAL-CFPM-{size}  → Classic Frame with Mount (avec passepartout)
+ * SKU format (Backloader frames) :
+ *   GLOBAL-CFP-{size}-BACKLOADER
  *
  * Couleur du cadre passée via attributes.color ("black" | "white")
  */
@@ -16,9 +15,9 @@ const PRODIGI_API_URL = isSandbox
 
 /** Correspondance taille Frameify → taille Prodigi (inches) */
 const SIZE_MAP: Record<string, string> = {
-  "30x30": "12x12",
-  "40x40": "16x16",
-  "50x70": "20x28",
+  "30x30": "12X16",
+  "40x40": "18X24",
+  "50x70": "A2",
 };
 
 /** Correspondance couleur Frameify → attribut Prodigi */
@@ -27,10 +26,9 @@ const COLOR_MAP: Record<string, string> = {
   blanc: "white",
 };
 
-function buildSku(size: string, passepartout: string): string {
-  const inches = SIZE_MAP[size] ?? "16x16";
-  const prefix = passepartout === "oui" ? "GLOBAL-CFPM" : "GLOBAL-CFP";
-  return `${prefix}-${inches}`;
+function buildSku(size: string): string {
+  const prodigiSize = SIZE_MAP[size] ?? "18X24";
+  return `GLOBAL-CFP-${prodigiSize}-BACKLOADER`;
 }
 
 export interface ProdigiOrderItem {
@@ -74,7 +72,7 @@ export async function createProdigiOrder(
     },
     items: items.map((item, i) => ({
       merchantReference: `item-${i}`,
-      sku: buildSku(item.size, item.passepartout),
+      sku: buildSku(item.size),
       copies: item.quantity,
       sizing: "fillPrintArea",
       attributes: {
