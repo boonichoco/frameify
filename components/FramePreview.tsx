@@ -174,7 +174,7 @@ export default function FramePreview({
                         left: 0,
                         right: 0,
                         padding: "22px 12px 24px",
-                        background: "linear-gradient(rgba(0,0,0,0.40), transparent)",
+                        background: "linear-gradient(rgba(0,0,0,0.18), transparent)",
                         zIndex: 2,
                         display: "flex",
                         justifyContent: "center",
@@ -191,10 +191,7 @@ export default function FramePreview({
                           textAlign: "center",
                           whiteSpace: "pre-line",
                           lineHeight: 1.4,
-                          textShadow:
-                            "0 1px 0 rgba(255,255,255,0.15), " +
-                            "0 -1px 0 rgba(0,0,0,0.3), " +
-                            "0 2px 6px rgba(0,0,0,0.35)",
+                          textShadow: "0 1px 3px rgba(0,0,0,0.12)",
                         }}
                       >
                         {customText}
