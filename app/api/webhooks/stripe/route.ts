@@ -42,15 +42,23 @@ async function handleOrderCompleted(session: Stripe.Checkout.Session) {
     return;
   }
 
+  if (!metadata.transformedImageUrl) {
+    console.error("[webhook] transformedImageUrl manquant dans metadata — l'image était probablement un data URL", session.id);
+  }
+
   const addr = shipping.address;
   const name = shipping.name ?? customer_details.name ?? "Client";
 
   // Upscale 4× + gravure du texte — uniquement sur commande confirmée
+  console.log("[webhook] transformedImageUrl:", metadata.transformedImageUrl?.slice(0, 80));
+  console.log("[webhook] customText:", metadata.customText ?? "(aucun)");
+
   const printImageUrl = await upscaleForPrint(
     metadata.transformedImageUrl,
     session.id,
     metadata.customText
   );
+  console.log("[webhook] printImageUrl:", printImageUrl?.slice(0, 80));
 
   try {
     const order = await createProdigiOrder(

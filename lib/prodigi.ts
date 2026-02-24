@@ -9,7 +9,8 @@
  * Couleur du cadre passée via attributes.color ("black" | "white")
  */
 
-const PRODIGI_API_URL = process.env.PRODIGI_SANDBOX === "true"
+const isSandbox = (process.env.PRODIGI_SANDBOX ?? "").trim().toLowerCase() === "true";
+const PRODIGI_API_URL = isSandbox
   ? "https://api.sandbox.prodigi.com"
   : "https://api.prodigi.com";
 
