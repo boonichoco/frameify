@@ -9,7 +9,7 @@ import CheckoutButton from "@/components/CheckoutButton";
 import { ArtStyle, FrameOption, ProductConfig, computePrice } from "@/types";
 
 const DEFAULT_OPTIONS: FrameOption = {
-  size: "A3",
+  size: "12x16",
   color: "noir",
 };
 

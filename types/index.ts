@@ -1,5 +1,5 @@
 export type ArtStyle = "ghibli" | "flat";
-export type FrameSize = "A4" | "12x16" | "A3" | "A2" | "18x24";
+export type FrameSize = "11x14" | "12x16" | "18x24" | "24x32" | "28x40";
 export type FrameColor = "noir" | "blanc" | "naturel" | "marron" | "gris-fonce" | "gris-clair" | "or-antique" | "argent-antique";
 
 export interface FrameOption {
@@ -15,11 +15,11 @@ export interface ProductConfig extends FrameOption {
 }
 
 export const FRAME_PRICES: Record<FrameSize, number> = {
-  "A4": 49,
+  "11x14": 49,
   "12x16": 59,
-  "A3": 69,
-  "A2": 89,
-  "18x24": 99,
+  "18x24": 79,
+  "24x32": 99,
+  "28x40": 129,
 };
 
 export function computePrice(options: FrameOption): number {

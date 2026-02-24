@@ -14,11 +14,11 @@ interface FramePreviewProps {
 }
 
 const ASPECT_RATIO: Record<FrameSize, number> = {
-  "A4": 297 / 210,
+  "11x14": 14 / 11,
   "12x16": 16 / 12,
-  "A3": 420 / 297,
-  "A2": 594 / 420,
   "18x24": 24 / 18,
+  "24x32": 32 / 24,
+  "28x40": 40 / 28,
 };
 
 const FRAME_CONFIG: Record<FrameColor, {
@@ -306,7 +306,7 @@ export default function FramePreview({
                         style={{
                           fontFamily: "var(--font-display), sans-serif",
                           color: "#F5F0E8",
-                          fontSize: "1.4rem",
+                          fontSize: "1.8rem",
                           fontWeight: 400,
                           letterSpacing: "0.12em",
                           textTransform: "uppercase",

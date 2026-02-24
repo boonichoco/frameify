@@ -16,11 +16,11 @@ interface ProductConfiguratorProps {
 }
 
 const SIZES: { value: FrameSize; label: string; desc: string }[] = [
-  { value: "A4", label: "A4 — 21 × 30 cm", desc: "Compact" },
-  { value: "12x16", label: "12 × 16\" — 30 × 40 cm", desc: "Moyen" },
-  { value: "A3", label: "A3 — 30 × 42 cm", desc: "Standard" },
-  { value: "A2", label: "A2 — 42 × 60 cm", desc: "Grand" },
-  { value: "18x24", label: "18 × 24\" — 46 × 61 cm", desc: "Très grand" },
+  { value: "11x14", label: "28 × 36 cm", desc: "Compact" },
+  { value: "12x16", label: "30 × 40 cm", desc: "Moyen" },
+  { value: "18x24", label: "46 × 61 cm", desc: "Standard" },
+  { value: "24x32", label: "61 × 81 cm", desc: "Grand" },
+  { value: "28x40", label: "71 × 102 cm", desc: "Très grand" },
 ];
 
 const COLORS: { value: FrameColor; label: string; color: string }[] = [

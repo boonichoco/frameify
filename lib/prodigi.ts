@@ -2,10 +2,10 @@
  * Prodigi Print API v4.0
  * Docs : https://www.prodigi.com/print-api/docs/reference/
  *
- * SKU format (Backloader frames) :
- *   GLOBAL-CFP-{size}-BACKLOADER
+ * SKU format (Classic Frames with Mount — impression + cadre + passepartout) :
+ *   GLOBAL-CFPM-{size}
  *
- * Couleur du cadre passée via attributes.color ("black" | "white")
+ * Couleur du cadre passée via attributes.color
  */
 
 const isSandbox = (process.env.PRODIGI_SANDBOX ?? "").trim().toLowerCase() === "true";
@@ -13,13 +13,13 @@ const PRODIGI_API_URL = isSandbox
   ? "https://api.sandbox.prodigi.com"
   : "https://api.prodigi.com";
 
-/** Les tailles Frameify correspondent directement aux SKU Prodigi */
+/** Tailles Frameify → SKU Prodigi */
 const SKU_SIZE: Record<string, string> = {
-  "A4": "A4",
+  "11x14": "11X14",
   "12x16": "12X16",
-  "A3": "A3",
-  "A2": "A2",
   "18x24": "18X24",
+  "24x32": "24X32",
+  "28x40": "28X40",
 };
 
 /** Correspondance couleur Frameify → attribut Prodigi */
@@ -36,7 +36,7 @@ const COLOR_MAP: Record<string, string> = {
 
 function buildSku(size: string): string {
   const prodigiSize = SKU_SIZE[size] ?? "18X24";
-  return `GLOBAL-CFP-${prodigiSize}-BACKLOADER`;
+  return `GLOBAL-CFPM-${prodigiSize}`;
 }
 
 export interface ProdigiOrderItem {
