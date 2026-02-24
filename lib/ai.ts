@@ -22,15 +22,18 @@ const PROMPTS: Record<ArtStyle, string> = {
     "Do not add, remove or move any element from the original scene.",
 
   flat:
-    "Transform this photo into a flat illustration style. " +
+    "Transform this photo into a minimal flat design illustration. " +
     "Stay as faithful as possible to the original image: " +
     "keep every person, object, animal and element exactly where they are, " +
     "preserve the exact framing, angles, proportions and spatial relationships. " +
-    "Only change the visual rendering: use warm, slightly pastel colours, " +
-    "simple stylised shadows with minimal gradients, " +
-    "clean sharp vector-like shapes with smooth edges, " +
-    "a soft and simplified perspective, " +
-    "and a sunny, idealised atmosphere. " +
+    "Only change the visual rendering: " +
+    "use completely flat solid colour fills with zero gradients, zero textures, " +
+    "no shading whatsoever, only flat geometric colour blocks. " +
+    "Warm pastel colour palette. " +
+    "Bold clean vector outlines, perfectly smooth edges. " +
+    "Extremely simplified shapes — reduce all details to their most basic geometric forms. " +
+    "No realistic lighting, no depth, no 3D effects — pure 2D flat graphic design. " +
+    "Sunny, idealised mood. " +
     "Do not add, remove or move any element from the original scene.",
 };
 
