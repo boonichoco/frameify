@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Prix invalide" }, { status: 400 });
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").trim();
 
     // Stripe n'accepte que des URLs HTTPS pour images et metadata (500 chars max par valeur)
     const transformedUrl = isHttpUrl(body.transformedImageUrl) ? body.transformedImageUrl : "";
