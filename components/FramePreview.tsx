@@ -184,7 +184,7 @@ export default function FramePreview({
                         style={{
                           fontFamily: "var(--font-display), sans-serif",
                           color: "#F5F0E8",
-                          fontSize: "1.15rem",
+                          fontSize: "1.4rem",
                           fontWeight: 400,
                           letterSpacing: "0.12em",
                           textTransform: "uppercase",
