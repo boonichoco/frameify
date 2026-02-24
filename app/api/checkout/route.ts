@@ -34,8 +34,8 @@ export async function POST(req: NextRequest) {
             currency: "eur",
             unit_amount: body.price * 100,
             product_data: {
-              name: `Cadre Frameify · ${body.size} cm · ${body.finish}`,
-              description: `Cadre ${body.color} · Passepartout: ${body.passepartout}`,
+              name: `Cadre Frameify · ${body.size}`,
+              description: `Cadre ${body.color}`,
               ...(transformedUrl ? { images: [transformedUrl] } : {}),
             },
           },
@@ -47,9 +47,7 @@ export async function POST(req: NextRequest) {
       },
       metadata: {
         size: body.size,
-        finish: body.finish,
         color: body.color,
-        passepartout: body.passepartout,
         ...(transformedUrl ? { transformedImageUrl: transformedUrl } : {}),
         ...(originalUrl ? { originalImageUrl: originalUrl } : {}),
         ...(body.customText ? { customText: body.customText } : {}),

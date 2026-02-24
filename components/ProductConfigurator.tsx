@@ -4,9 +4,7 @@ import { motion } from "framer-motion";
 import {
   FrameOption,
   FrameSize,
-  FrameFinish,
   FrameColor,
-  Passepartout,
   computePrice,
 } from "@/types";
 
@@ -18,15 +16,11 @@ interface ProductConfiguratorProps {
 }
 
 const SIZES: { value: FrameSize; label: string; desc: string }[] = [
-  { value: "30x30", label: "30 × 30 cm", desc: "Compact" },
-  { value: "40x40", label: "40 × 40 cm", desc: "Standard" },
-  { value: "50x70", label: "50 × 70 cm", desc: "Grand format" },
-];
-
-const FINISHES: { value: FrameFinish; label: string; desc: string }[] = [
-  { value: "mat", label: "Mat", desc: "Sans reflet" },
-  { value: "brillant", label: "Brillant", desc: "Couleurs vives" },
-  { value: "fine-art", label: "Fine Art", desc: "Qualité musée" },
+  { value: "A4", label: "A4 — 21 × 30 cm", desc: "Compact" },
+  { value: "12x16", label: "12 × 16\" — 30 × 40 cm", desc: "Moyen" },
+  { value: "A3", label: "A3 — 30 × 42 cm", desc: "Standard" },
+  { value: "A2", label: "A2 — 42 × 60 cm", desc: "Grand" },
+  { value: "18x24", label: "18 × 24\" — 46 × 61 cm", desc: "Très grand" },
 ];
 
 const COLORS: { value: FrameColor; label: string; color: string }[] = [
@@ -108,46 +102,9 @@ export default function ProductConfigurator({ options, onChange, customText, onC
         </div>
       </Section>
 
-      {/* Finition */}
-      <Section label="Finition">
-        <div className="flex overflow-hidden" style={{ border: `1px solid ${DIVIDER}` }}>
-          {FINISHES.map((f, i) => {
-            const active = options.finish === f.value;
-            return (
-              <button
-                key={f.value}
-                onClick={() => update("finish", f.value)}
-                className="flex-1 py-3.5 px-2 text-center"
-                style={{
-                  background: active ? SEL_BG : IDLE_BG,
-                  borderLeft: i > 0 ? `1px solid ${DIVIDER}` : "none",
-                  color: active ? SEL_TEXT : IDLE_TEXT,
-                  cursor: "pointer",
-                  transition: "background 0.15s ease, color 0.15s ease",
-                }}
-              >
-                <div style={{
-                  fontSize: "0.875rem",
-                  fontWeight: active ? 600 : 400,
-                }}>
-                  {f.label}
-                </div>
-                <div style={{
-                  fontSize: "0.7rem",
-                  marginTop: 3,
-                  color: active ? SEL_MUTED : IDLE_MUTED,
-                }}>
-                  {f.desc}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </Section>
-
       {/* Couleur cadre */}
       <Section label="Cadre">
-        <div className="flex items-center gap-5">
+        <div className="grid grid-cols-4 gap-4">
           {COLORS.map((c) => {
             const active = options.color === c.value;
             return (
@@ -184,40 +141,13 @@ export default function ProductConfigurator({ options, onChange, customText, onC
                   )}
                 </div>
                 <span style={{
-                  fontSize: "0.75rem",
+                  fontSize: "0.7rem",
                   color: active ? IDLE_TEXT : IDLE_MUTED,
                   fontWeight: active ? 600 : 400,
+                  whiteSpace: "nowrap",
                 }}>
                   {c.label}
                 </span>
-              </button>
-            );
-          })}
-        </div>
-      </Section>
-
-      {/* Passepartout */}
-      <Section label="Passepartout">
-        <div className="flex overflow-hidden" style={{ border: `1px solid ${DIVIDER}` }}>
-          {(["non", "oui"] as Passepartout[]).map((p, i) => {
-            const active = options.passepartout === p;
-            return (
-              <button
-                key={p}
-                onClick={() => update("passepartout", p)}
-                className="flex-1 py-3.5 flex items-center justify-center"
-                style={{
-                  background: active ? SEL_BG : IDLE_BG,
-                  borderLeft: i > 0 ? `1px solid ${DIVIDER}` : "none",
-                  color: active ? SEL_TEXT : IDLE_TEXT,
-                  cursor: "pointer",
-                  fontSize: "0.875rem",
-                  fontWeight: active ? 600 : 400,
-                  gap: "0.5rem",
-                  transition: "background 0.15s ease, color 0.15s ease",
-                }}
-              >
-                {p === "oui" ? "Avec passepartout" : "Sans passepartout"}
               </button>
             );
           })}

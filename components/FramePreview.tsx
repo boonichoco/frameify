@@ -2,22 +2,23 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { FrameColor, FrameSize, Passepartout } from "@/types";
+import { FrameColor, FrameSize } from "@/types";
 
 interface FramePreviewProps {
   originalUrl: string | null;
   transformedUrl: string | null;
   isTransforming: boolean;
   frameColor: FrameColor;
-  passepartout: Passepartout;
   size: FrameSize;
   customText?: string;
 }
 
 const ASPECT_RATIO: Record<FrameSize, number> = {
-  "30x30": 1,
-  "40x40": 1,
-  "50x70": 7 / 5,
+  "A4": 297 / 210,
+  "12x16": 16 / 12,
+  "A3": 420 / 297,
+  "A2": 594 / 420,
+  "18x24": 24 / 18,
 };
 
 const FRAME_CONFIG: Record<FrameColor, {
@@ -208,22 +209,18 @@ const FRAME_CONFIG: Record<FrameColor, {
 };
 
 const FRAME_THICKNESS = 20;
-const MATTE_PADDING = 24;
 
 export default function FramePreview({
   originalUrl,
   transformedUrl,
   isTransforming,
   frameColor,
-  passepartout,
   size,
   customText,
 }: FramePreviewProps) {
   const displayUrl = transformedUrl || originalUrl;
   const frame = FRAME_CONFIG[frameColor];
-  // padding-bottom trick for reliable aspect ratio
   const paddingBottom = `${ASPECT_RATIO[size] * 100}%`;
-  const matte = passepartout === "oui" ? MATTE_PADDING : 0;
 
   return (
     <div
@@ -265,23 +262,18 @@ export default function FramePreview({
               right: FRAME_THICKNESS,
               bottom: FRAME_THICKNESS,
               left: FRAME_THICKNESS,
-              background: passepartout === "oui" ? "#FAFAF8" : "#2E2C2A",
+              background: "#2E2C2A",
               boxShadow: frame.rabbet,
               transition: "background 0.3s ease",
             }}
           >
-            {/* Zone image (passepartout optionnel) */}
             <div
               style={{
                 position: "absolute",
-                top: matte,
-                right: matte,
-                bottom: matte,
-                left: matte,
+                inset: 0,
                 overflow: "hidden",
                 background: "#2E2C2A",
                 boxShadow: frame.innerShadow,
-                transition: "top 0.3s ease, right 0.3s ease, bottom 0.3s ease, left 0.3s ease",
               }}
             >
               {displayUrl ? (

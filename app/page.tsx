@@ -9,10 +9,8 @@ import CheckoutButton from "@/components/CheckoutButton";
 import { ArtStyle, FrameOption, ProductConfig, computePrice } from "@/types";
 
 const DEFAULT_OPTIONS: FrameOption = {
-  size: "30x30",
-  finish: "mat",
+  size: "A3",
   color: "noir",
-  passepartout: "oui",
 };
 
 type Step = "upload" | "result";
@@ -245,7 +243,6 @@ export default function Home() {
                   transformedUrl={transformedUrl}
                   isTransforming={isTransforming}
                   frameColor={options.color}
-                  passepartout={options.passepartout}
                   size={options.size}
                   customText={customText}
                 />

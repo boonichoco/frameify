@@ -68,7 +68,6 @@ async function handleOrderCompleted(session: Stripe.Checkout.Session) {
           imageUrl: printImageUrl,
           size: metadata.size,
           color: metadata.color,
-          passepartout: metadata.passepartout ?? "oui",
           quantity: 1,
         },
       ],

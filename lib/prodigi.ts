@@ -13,11 +13,13 @@ const PRODIGI_API_URL = isSandbox
   ? "https://api.sandbox.prodigi.com"
   : "https://api.prodigi.com";
 
-/** Correspondance taille Frameify → taille Prodigi (inches) */
-const SIZE_MAP: Record<string, string> = {
-  "30x30": "12X16",
-  "40x40": "18X24",
-  "50x70": "A2",
+/** Les tailles Frameify correspondent directement aux SKU Prodigi */
+const SKU_SIZE: Record<string, string> = {
+  "A4": "A4",
+  "12x16": "12X16",
+  "A3": "A3",
+  "A2": "A2",
+  "18x24": "18X24",
 };
 
 /** Correspondance couleur Frameify → attribut Prodigi */
@@ -33,7 +35,7 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 function buildSku(size: string): string {
-  const prodigiSize = SIZE_MAP[size] ?? "18X24";
+  const prodigiSize = SKU_SIZE[size] ?? "18X24";
   return `GLOBAL-CFP-${prodigiSize}-BACKLOADER`;
 }
 
@@ -41,7 +43,6 @@ export interface ProdigiOrderItem {
   imageUrl: string;
   size: string;
   color: string;
-  passepartout: string;
   quantity: number;
 }
 
