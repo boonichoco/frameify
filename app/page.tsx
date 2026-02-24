@@ -61,30 +61,15 @@ export default function Home() {
       {/* Navbar */}
       <nav
         style={{ borderBottom: "1px solid var(--border)" }}
-        className="flex items-center justify-between px-8 py-5"
+        className="flex items-center justify-center px-8 py-5"
       >
-        <span
-          className="font-serif text-xl tracking-[0.15em]"
-          style={{ color: "var(--fg)", fontWeight: 400 }}
+        <a
+          href="/"
+          className="font-serif text-xl tracking-[0.15em] transition-opacity hover:opacity-60"
+          style={{ color: "var(--fg)", fontWeight: 400, textDecoration: "none" }}
         >
           FRAMEIFY
-        </span>
-        <div className="flex items-center gap-8">
-          <span className="hidden sm:block text-xs tracking-widest uppercase" style={{ color: "var(--muted)" }}>
-            Édition 2025
-          </span>
-          <a
-            href="#configurateur"
-            className="text-xs tracking-widest uppercase px-5 py-2.5 transition-all duration-200 hover:opacity-70"
-            style={{
-              border: "1px solid var(--fg)",
-              color: "var(--fg)",
-              letterSpacing: "0.12em",
-            }}
-          >
-            Commander
-          </a>
-        </div>
+        </a>
       </nav>
 
       <AnimatePresence mode="wait">
