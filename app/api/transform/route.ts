@@ -25,15 +25,20 @@ export async function POST(req: NextRequest) {
 
     const pngBuffer = await transformToArtStyle(buffer, file.type);
 
-    // Upload sur Vercel Blob si le token est disponible, sinon data URL
+    // Upload sur Vercel Blob si disponible, sinon fallback data URL
     let url: string;
     if (process.env.BLOB_READ_WRITE_TOKEN) {
-      const filename = `preview-${Date.now()}.png`;
-      const result = await put(filename, pngBuffer, {
-        access: "public",
-        contentType: "image/png",
-      });
-      url = result.url;
+      try {
+        const filename = `preview-${Date.now()}.png`;
+        const result = await put(filename, pngBuffer, {
+          access: "public",
+          contentType: "image/png",
+        });
+        url = result.url;
+      } catch (blobErr) {
+        console.warn("[/api/transform] Blob upload échoué, fallback data URL:", blobErr);
+        url = `data:image/png;base64,${pngBuffer.toString("base64")}`;
+      }
     } else {
       url = `data:image/png;base64,${pngBuffer.toString("base64")}`;
     }
