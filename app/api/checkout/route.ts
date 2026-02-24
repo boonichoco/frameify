@@ -56,9 +56,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: session.url });
   } catch (err) {
-    console.error("[/api/checkout]", err);
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[/api/checkout]", message, err);
     return NextResponse.json(
-      { error: "Erreur lors de la création du paiement" },
+      { error: message },
       { status: 500 }
     );
   }
