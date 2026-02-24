@@ -170,11 +170,11 @@ export default function FramePreview({
                     <div
                       style={{
                         position: "absolute",
-                        bottom: 0,
+                        top: 0,
                         left: 0,
                         right: 0,
-                        padding: "12px 8px 10px",
-                        background: "linear-gradient(transparent, rgba(0,0,0,0.55))",
+                        padding: "14px 12px 18px",
+                        background: "linear-gradient(rgba(0,0,0,0.35), transparent)",
                         zIndex: 2,
                         display: "flex",
                         justifyContent: "center",
@@ -182,12 +182,17 @@ export default function FramePreview({
                     >
                       <span
                         style={{
-                          color: "#FFFFFF",
-                          fontSize: "0.75rem",
-                          fontWeight: 500,
-                          letterSpacing: "0.08em",
+                          fontFamily: "var(--font-script), cursive",
+                          color: "#F5F0E8",
+                          fontSize: "1.1rem",
+                          fontWeight: 400,
+                          letterSpacing: "0.15em",
+                          textTransform: "uppercase",
                           textAlign: "center",
-                          textShadow: "0 1px 3px rgba(0,0,0,0.5)",
+                          textShadow:
+                            "0 1px 0 rgba(255,255,255,0.15), " +
+                            "0 -1px 0 rgba(0,0,0,0.3), " +
+                            "0 2px 6px rgba(0,0,0,0.35)",
                         }}
                       >
                         {customText}
