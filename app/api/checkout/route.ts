@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { ProductConfig, computePrice } from "@/types";
 
+function isHttpUrl(url: string): boolean {
+  return url.startsWith("http://") || url.startsWith("https://");
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body: ProductConfig = await req.json();
@@ -12,6 +16,10 @@ export async function POST(req: NextRequest) {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
+    // Stripe n'accepte que des URLs HTTPS pour images et metadata (500 chars max par valeur)
+    const transformedUrl = isHttpUrl(body.transformedImageUrl) ? body.transformedImageUrl : "";
+    const originalUrl = isHttpUrl(body.originalImageUrl) ? body.originalImageUrl : "";
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -24,7 +32,7 @@ export async function POST(req: NextRequest) {
             product_data: {
               name: `Cadre Frameify · ${body.size} cm · ${body.finish}`,
               description: `Cadre ${body.color} · Passepartout: ${body.passepartout}`,
-              images: [body.transformedImageUrl],
+              ...(transformedUrl ? { images: [transformedUrl] } : {}),
             },
           },
           quantity: 1,
@@ -38,8 +46,8 @@ export async function POST(req: NextRequest) {
         finish: body.finish,
         color: body.color,
         passepartout: body.passepartout,
-        transformedImageUrl: body.transformedImageUrl,
-        originalImageUrl: body.originalImageUrl,
+        ...(transformedUrl ? { transformedImageUrl: transformedUrl } : {}),
+        ...(originalUrl ? { originalImageUrl: originalUrl } : {}),
         ...(body.customText ? { customText: body.customText } : {}),
       },
       success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
