@@ -11,6 +11,7 @@ interface FramePreviewProps {
   frameColor: FrameColor;
   passepartout: Passepartout;
   size: FrameSize;
+  customText?: string;
 }
 
 const ASPECT_RATIO: Record<FrameSize, number> = {
@@ -86,6 +87,7 @@ export default function FramePreview({
   frameColor,
   passepartout,
   size,
+  customText,
 }: FramePreviewProps) {
   const displayUrl = transformedUrl || originalUrl;
   const frame = FRAME_CONFIG[frameColor];
@@ -164,6 +166,34 @@ export default function FramePreview({
                     sizes="(max-width: 768px) 100vw, 360px"
                     unoptimized
                   />
+                  {customText && !isTransforming && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        padding: "12px 8px 10px",
+                        background: "linear-gradient(transparent, rgba(0,0,0,0.55))",
+                        zIndex: 2,
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "#FFFFFF",
+                          fontSize: "0.75rem",
+                          fontWeight: 500,
+                          letterSpacing: "0.08em",
+                          textAlign: "center",
+                          textShadow: "0 1px 3px rgba(0,0,0,0.5)",
+                        }}
+                      >
+                        {customText}
+                      </span>
+                    </div>
+                  )}
                   {isTransforming && (
                     <motion.div
                       initial={{ opacity: 0 }}

@@ -24,6 +24,7 @@ export default function Home() {
   const [isTransforming, setIsTransforming] = useState(false);
   const [options, setOptions] = useState<FrameOption>(DEFAULT_OPTIONS);
   const [artStyle, setArtStyle] = useState<ArtStyle>("ghibli");
+  const [customText, setCustomText] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const handleUpload = useCallback(async (file: File, previewUrl: string) => {
@@ -260,6 +261,7 @@ export default function Home() {
                   frameColor={options.color}
                   passepartout={options.passepartout}
                   size={options.size}
+                  customText={customText}
                 />
                 {error && (
                   <p className="text-xs text-center mt-2" style={{ color: "#B0403A" }}>{error}</p>
@@ -268,6 +270,39 @@ export default function Home() {
 
               <div className="flex flex-col gap-10">
                 <ProductConfigurator options={options} onChange={setOptions} />
+
+                {/* Texte personnalisé */}
+                <div>
+                  <p
+                    className="text-xs tracking-widest uppercase mb-3"
+                    style={{ color: "var(--muted)" }}
+                  >
+                    Texte personnalisé
+                  </p>
+                  <input
+                    type="text"
+                    value={customText}
+                    onChange={(e) => setCustomText(e.target.value)}
+                    placeholder="Ex : Famille Dupont, été 2025"
+                    maxLength={60}
+                    className="w-full text-sm px-4 py-3 transition-all duration-200 focus:outline-none"
+                    style={{
+                      background: "#FFFFFF",
+                      color: "#1A1917",
+                      border: "2px solid var(--border)",
+                      borderRadius: 8,
+                    }}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = "#1A1917")}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+                  />
+                  <p
+                    className="text-xs mt-1.5"
+                    style={{ color: "var(--muted)" }}
+                  >
+                    Optionnel — apparaît en bas de l&apos;image
+                  </p>
+                </div>
+
                 <CheckoutButton
                   config={productConfig}
                   disabled={isTransforming || !transformedUrl}
