@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { createGelatoOrder } from "@/lib/gelato";
+import { createProdigiOrder } from "@/lib/prodigi";
 import { put } from "@vercel/blob";
 import sharp from "sharp";
 import Stripe from "stripe";
@@ -49,13 +49,13 @@ async function handleOrderCompleted(session: Stripe.Checkout.Session) {
   const printImageUrl = await upscaleForPrint(metadata.transformedImageUrl, session.id);
 
   try {
-    const order = await createGelatoOrder(
+    const order = await createProdigiOrder(
       [
         {
           imageUrl: printImageUrl,
           size: metadata.size,
           color: metadata.color,
-          finish: metadata.finish,
+          passepartout: metadata.passepartout ?? "oui",
           quantity: 1,
         },
       ],
@@ -70,9 +70,9 @@ async function handleOrderCompleted(session: Stripe.Checkout.Session) {
       session.id
     );
 
-    console.log(`[webhook] Commande Gelato créée: ${order.id} (session: ${session.id})`);
+    console.log(`[webhook] Commande Prodigi créée: ${order.id} (session: ${session.id})`);
   } catch (err) {
-    console.error("[webhook] Erreur création commande Gelato:", err);
+    console.error("[webhook] Erreur création commande Prodigi:", err);
   }
 }
 
