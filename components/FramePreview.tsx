@@ -173,8 +173,8 @@ export default function FramePreview({
                         top: 0,
                         left: 0,
                         right: 0,
-                        padding: "14px 12px 18px",
-                        background: "linear-gradient(rgba(0,0,0,0.35), transparent)",
+                        padding: "22px 12px 24px",
+                        background: "linear-gradient(rgba(0,0,0,0.40), transparent)",
                         zIndex: 2,
                         display: "flex",
                         justifyContent: "center",
@@ -182,13 +182,15 @@ export default function FramePreview({
                     >
                       <span
                         style={{
-                          fontFamily: "var(--font-script), cursive",
+                          fontFamily: "var(--font-display), sans-serif",
                           color: "#F5F0E8",
-                          fontSize: "1.1rem",
+                          fontSize: "1.15rem",
                           fontWeight: 400,
-                          letterSpacing: "0.15em",
+                          letterSpacing: "0.12em",
                           textTransform: "uppercase",
                           textAlign: "center",
+                          whiteSpace: "pre-line",
+                          lineHeight: 1.4,
                           textShadow:
                             "0 1px 0 rgba(255,255,255,0.15), " +
                             "0 -1px 0 rgba(0,0,0,0.3), " +

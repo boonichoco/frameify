@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import { Cormorant_Garamond, Sacramento } from "next/font/google";
+import { Cormorant_Garamond, Titan_One } from "next/font/google";
 import "./globals.css";
 
 const geist = Geist({
@@ -15,8 +15,8 @@ const cormorant = Cormorant_Garamond({
   style: ["normal", "italic"],
 });
 
-const sacramento = Sacramento({
-  variable: "--font-script",
+const titanOne = Titan_One({
+  variable: "--font-display",
   subsets: ["latin"],
   weight: "400",
 });
@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className="scroll-smooth">
       <body
-        className={`${geist.variable} ${cormorant.variable} ${sacramento.variable} font-sans antialiased`}
+        className={`${geist.variable} ${cormorant.variable} ${titanOne.variable} font-sans antialiased`}
         style={{ background: "var(--bg)", color: "var(--fg)" }}
       >
         {children}

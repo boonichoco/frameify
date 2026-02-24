@@ -220,13 +220,13 @@ export default function ProductConfigurator({ options, onChange, customText, onC
 
       {/* Texte personnalisé */}
       <Section label="Texte personnalisé">
-        <input
-          type="text"
+        <textarea
           value={customText}
           onChange={(e) => onCustomTextChange(e.target.value)}
-          placeholder="Ex : Famille Dupont, été 2025"
-          maxLength={60}
-          className="w-full text-sm px-4 py-3 transition-all duration-200 focus:outline-none"
+          placeholder={"Ex : Famille Dupont\nÉté 2025"}
+          maxLength={80}
+          rows={2}
+          className="w-full text-sm px-4 py-3 transition-all duration-200 focus:outline-none resize-none"
           style={{
             background: IDLE_BG,
             color: IDLE_TEXT,
@@ -236,7 +236,7 @@ export default function ProductConfigurator({ options, onChange, customText, onC
           onBlur={(e) => (e.currentTarget.style.borderColor = DIVIDER)}
         />
         <p style={{ fontSize: "0.7rem", color: IDLE_MUTED, marginTop: -6 }}>
-          Optionnel — apparaît en haut de l&apos;image
+          Optionnel — apparaît en haut de l&apos;image · Entrée pour aller à la ligne
         </p>
       </Section>
 
