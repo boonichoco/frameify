@@ -17,6 +17,7 @@
     "react-dom": "19.2.3",
     "react-dropzone": "^15.0.0",
     "replicate": "^1.4.0",
+    "satori": "^0.19.2",
     "sharp": "^0.34.5",
     "stripe": "^20.3.1"
   },

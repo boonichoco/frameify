@@ -3,7 +3,9 @@ import { stripe } from "@/lib/stripe";
 import { createProdigiOrder } from "@/lib/prodigi";
 import { put } from "@vercel/blob";
 import sharp from "sharp";
+import satori from "satori";
 import Stripe from "stripe";
+import React from "react";
 
 export const maxDuration = 60;
 
@@ -56,11 +58,7 @@ async function handleOrderCompleted(session: Stripe.Checkout.Session) {
   }
 
   // Upscale 4× + texte personnalisé pour impression
-  const printImageUrl = await upscaleForPrint(
-    imageUrl,
-    session.id,
-    metadata.customText
-  );
+  const printImageUrl = await upscaleForPrint(imageUrl, session.id, metadata.customText);
 
   // Créer la commande Prodigi
   try {
@@ -110,14 +108,14 @@ async function upscaleForPrint(
 
     let pipeline = sharp(sourceBuffer).resize(printW, printH, { kernel: "lanczos3" });
 
-    // Graver le texte personnalisé
+    // Graver le texte personnalisé via satori → SVG → sharp
     if (customText?.trim()) {
       try {
-        const textOverlay = await createTextOverlay(customText.trim(), printW, printH);
-        pipeline = pipeline.composite([{ input: textOverlay, top: 0, left: 0 }]);
+        const textPng = await renderTextOverlay(customText.trim(), printW, printH);
+        pipeline = pipeline.composite([{ input: textPng, top: 0, left: 0 }]);
         console.log("[webhook] Text overlay OK");
       } catch (textErr) {
-        console.warn("[webhook] Text overlay échoué (commande créée sans texte):", textErr instanceof Error ? textErr.message : textErr);
+        console.warn("[webhook] Text overlay échoué:", textErr instanceof Error ? textErr.message : textErr);
       }
     }
 
@@ -136,13 +134,13 @@ async function upscaleForPrint(
   }
 }
 
-// ── SVG text overlay avec police embarquée ──────────────────────────
+// ── Rendu texte via satori (supporte les polices custom sur Vercel) ──
 
-let fontCache: string | null = null;
+let fontData: ArrayBuffer | null = null;
 
-async function loadFontBase64(): Promise<string> {
-  if (fontCache) return fontCache;
-  // Récupérer l'URL du fichier .woff2 depuis Google Fonts
+async function loadFont(): Promise<ArrayBuffer> {
+  if (fontData) return fontData;
+  // Récupérer l'URL du TTF depuis Google Fonts CSS
   const cssRes = await fetch(
     "https://fonts.googleapis.com/css2?family=Titan+One&display=swap",
     { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" } }
@@ -151,38 +149,56 @@ async function loadFontBase64(): Promise<string> {
   const urlMatch = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)/);
   if (!urlMatch) throw new Error("Font URL introuvable");
   const fontRes = await fetch(urlMatch[1]);
-  const buf = Buffer.from(await fontRes.arrayBuffer());
-  fontCache = buf.toString("base64");
-  return fontCache;
+  fontData = await fontRes.arrayBuffer();
+  return fontData;
 }
 
-async function createTextOverlay(text: string, w: number, h: number): Promise<Buffer> {
-  const fontB64 = await loadFontBase64();
+async function renderTextOverlay(text: string, w: number, h: number): Promise<Buffer> {
+  const font = await loadFont();
   const fontSize = Math.round(w * 0.04);
-  const top = Math.round(h * 0.06) + fontSize;
   const lines = text.split("\n").map((l) => l.trim().toUpperCase()).filter(Boolean);
-  const lineH = fontSize * 1.5;
 
-  const tspans = lines
-    .map((line, i) => `<tspan x="${w / 2}" dy="${i === 0 ? 0 : lineH}">${esc(line)}</tspan>`)
-    .join("");
+  // Générer le SVG via satori (gère les polices custom)
+  const svg = await satori(
+    React.createElement(
+      "div",
+      {
+        style: {
+          width: w,
+          height: h,
+          display: "flex",
+          flexDirection: "column" as const,
+          alignItems: "center",
+          paddingTop: Math.round(h * 0.05),
+          background: "linear-gradient(180deg, rgba(0,0,0,0.22) 0%, transparent 20%)",
+        },
+      },
+      ...lines.map((line) =>
+        React.createElement("span", {
+          style: {
+            color: "#F5F0E8",
+            fontSize,
+            fontFamily: "TitanOne",
+            letterSpacing: Math.round(fontSize * 0.1),
+          },
+          children: line,
+        })
+      )
+    ),
+    {
+      width: w,
+      height: h,
+      fonts: [
+        {
+          name: "TitanOne",
+          data: font,
+          weight: 400,
+          style: "normal",
+        },
+      ],
+    }
+  );
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
-  <defs>
-    <style>@font-face { font-family: 'T'; src: url('data:font/woff2;base64,${fontB64}') format('woff2'); }</style>
-    <linearGradient id="f" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#000" stop-opacity="0.22"/>
-      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${Math.round(h * 0.2)}" fill="url(#f)"/>
-  <text font-family="'T',sans-serif" font-size="${fontSize}" fill="#F5F0E8"
-    text-anchor="middle" letter-spacing="${Math.round(fontSize * 0.1)}" y="${top}">${tspans}</text>
-</svg>`;
-
-  return Buffer.from(svg);
-}
-
-function esc(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  // Convertir SVG → PNG transparent via sharp
+  return sharp(Buffer.from(svg)).png().toBuffer();
 }
