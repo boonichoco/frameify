@@ -39,8 +39,8 @@ export async function transformToArtStyle(
     image: imageFile,
     prompt: ART_PROMPT,
     n: 1,
-    size: "auto",
-    quality: "high",
+    size: "1024x1024",
+    quality: "medium",
   });
 
   const images = response.data ?? [];
