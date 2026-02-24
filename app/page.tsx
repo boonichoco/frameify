@@ -53,6 +53,7 @@ export default function Home() {
     ...options,
     originalImageUrl: originalUrl ?? "",
     transformedImageUrl: transformedUrl ?? "",
+    customText: customText || undefined,
     price: computePrice(options),
   };
 

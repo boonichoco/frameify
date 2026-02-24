@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
         passepartout: body.passepartout,
         transformedImageUrl: body.transformedImageUrl,
         originalImageUrl: body.originalImageUrl,
+        ...(body.customText ? { customText: body.customText } : {}),
       },
       success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/#configurateur`,

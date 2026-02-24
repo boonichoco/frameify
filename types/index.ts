@@ -14,6 +14,7 @@ export interface FrameOption {
 export interface ProductConfig extends FrameOption {
   originalImageUrl: string;
   transformedImageUrl: string;
+  customText?: string;
   price: number;
 }
 
