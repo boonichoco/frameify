@@ -13,6 +13,8 @@ import {
 interface ProductConfiguratorProps {
   options: FrameOption;
   onChange: (options: FrameOption) => void;
+  customText: string;
+  onCustomTextChange: (text: string) => void;
 }
 
 const SIZES: { value: FrameSize; label: string; desc: string }[] = [
@@ -41,7 +43,7 @@ const IDLE_MUTED = "#8C887F";
 const SEL_MUTED = "rgba(255,255,255,0.50)";
 const DIVIDER = "rgba(0,0,0,0.10)";
 
-export default function ProductConfigurator({ options, onChange }: ProductConfiguratorProps) {
+export default function ProductConfigurator({ options, onChange, customText, onCustomTextChange }: ProductConfiguratorProps) {
   const price = computePrice(options);
 
   function update<K extends keyof FrameOption>(key: K, value: FrameOption[K]) {
@@ -214,6 +216,28 @@ export default function ProductConfigurator({ options, onChange }: ProductConfig
             );
           })}
         </div>
+      </Section>
+
+      {/* Texte personnalisé */}
+      <Section label="Texte personnalisé">
+        <input
+          type="text"
+          value={customText}
+          onChange={(e) => onCustomTextChange(e.target.value)}
+          placeholder="Ex : Famille Dupont, été 2025"
+          maxLength={60}
+          className="w-full text-sm px-4 py-3 transition-all duration-200 focus:outline-none"
+          style={{
+            background: IDLE_BG,
+            color: IDLE_TEXT,
+            border: `1px solid ${DIVIDER}`,
+          }}
+          onFocus={(e) => (e.currentTarget.style.borderColor = SEL_BG)}
+          onBlur={(e) => (e.currentTarget.style.borderColor = DIVIDER)}
+        />
+        <p style={{ fontSize: "0.7rem", color: IDLE_MUTED, marginTop: -6 }}>
+          Optionnel — apparaît en haut de l&apos;image
+        </p>
       </Section>
 
       {/* Prix */}

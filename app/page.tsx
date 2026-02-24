@@ -269,40 +269,12 @@ export default function Home() {
               </div>
 
               <div className="flex flex-col gap-10">
-                <ProductConfigurator options={options} onChange={setOptions} />
-
-                {/* Texte personnalisé */}
-                <div>
-                  <p
-                    className="text-xs tracking-widest uppercase mb-3"
-                    style={{ color: "var(--muted)" }}
-                  >
-                    Texte personnalisé
-                  </p>
-                  <input
-                    type="text"
-                    value={customText}
-                    onChange={(e) => setCustomText(e.target.value)}
-                    placeholder="Ex : Famille Dupont, été 2025"
-                    maxLength={60}
-                    className="w-full text-sm px-4 py-3 transition-all duration-200 focus:outline-none"
-                    style={{
-                      background: "#FFFFFF",
-                      color: "#1A1917",
-                      border: "2px solid var(--border)",
-                      borderRadius: 8,
-                    }}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = "#1A1917")}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
-                  />
-                  <p
-                    className="text-xs mt-1.5"
-                    style={{ color: "var(--muted)" }}
-                  >
-                    Optionnel — apparaît en bas de l&apos;image
-                  </p>
-                </div>
-
+                <ProductConfigurator
+                  options={options}
+                  onChange={setOptions}
+                  customText={customText}
+                  onCustomTextChange={setCustomText}
+                />
                 <CheckoutButton
                   config={productConfig}
                   disabled={isTransforming || !transformedUrl}
