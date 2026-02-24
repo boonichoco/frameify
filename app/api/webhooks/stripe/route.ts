@@ -61,6 +61,7 @@ async function handleOrderCompleted(session: Stripe.Checkout.Session) {
   const printImageUrl = await upscaleForPrint(imageUrl, session.id, metadata.customText);
 
   // Créer la commande Prodigi
+  console.log("[webhook] Prodigi order:", { size: metadata.size, color: metadata.color, imageUrl: printImageUrl?.slice(0, 80) });
   try {
     const order = await createProdigiOrder(
       [

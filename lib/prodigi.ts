@@ -94,6 +94,8 @@ export async function createProdigiOrder(
     })),
   };
 
+  console.log("[prodigi] URL:", PRODIGI_API_URL, "SKU:", body.items?.[0]?.sku, "color:", body.items?.[0]?.attributes?.color);
+
   const res = await fetch(`${PRODIGI_API_URL}/v4.0/orders`, {
     method: "POST",
     headers: {
