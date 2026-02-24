@@ -24,6 +24,12 @@ const SIZE_MAP: Record<string, string> = {
 const COLOR_MAP: Record<string, string> = {
   noir: "black",
   blanc: "white",
+  naturel: "natural",
+  marron: "brown",
+  "gris-fonce": "darkgrey",
+  "gris-clair": "lightgrey",
+  "or-antique": "antiquegold",
+  "argent-antique": "antiquesilver",
 };
 
 function buildSku(size: string): string {

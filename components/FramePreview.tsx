@@ -61,19 +61,149 @@ const FRAME_CONFIG: Record<FrameColor, {
       "0 30px 80px rgba(0,0,0,0.30)",
       "0 8px 24px rgba(0,0,0,0.18)",
     ].join(", "),
-    // ombre sur le rebord intérieur du cadre
     rabbet: [
       "inset 0 0 0 1.5px rgba(0,0,0,0.18)",
       "inset 4px 4px 8px rgba(0,0,0,0.14)",
       "inset -2px -2px 5px rgba(0,0,0,0.07)",
     ].join(", "),
-    // ombre portée de la moulure sur l'image
     innerShadow: [
       "inset 0 0 18px rgba(0,0,0,0.28)",
       "inset 6px 6px 14px rgba(0,0,0,0.32)",
       "inset -3px -3px 9px rgba(0,0,0,0.16)",
     ].join(", "),
     glare: "linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.08) 35%, transparent 55%, rgba(0,0,0,0.02) 100%)",
+  },
+  naturel: {
+    gradient: "linear-gradient(150deg, #D4BC9A 0%, #C4A882 45%, #A89070 100%)",
+    boxShadow: [
+      "inset 3px 3px 4px rgba(255,255,255,0.25)",
+      "inset -3px -3px 5px rgba(0,0,0,0.30)",
+      "inset 6px 6px 12px rgba(255,255,255,0.10)",
+      "inset -6px -6px 14px rgba(0,0,0,0.18)",
+      "0 30px 80px rgba(0,0,0,0.40)",
+      "0 8px 24px rgba(0,0,0,0.25)",
+    ].join(", "),
+    rabbet: [
+      "inset 0 0 0 1.5px rgba(0,0,0,0.30)",
+      "inset 4px 4px 8px rgba(0,0,0,0.25)",
+      "inset -2px -2px 5px rgba(0,0,0,0.12)",
+    ].join(", "),
+    innerShadow: [
+      "inset 0 0 20px rgba(0,0,0,0.38)",
+      "inset 6px 6px 14px rgba(0,0,0,0.42)",
+      "inset -3px -3px 9px rgba(0,0,0,0.22)",
+    ].join(", "),
+    glare: "linear-gradient(135deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.05) 35%, transparent 55%, rgba(0,0,0,0.04) 100%)",
+  },
+  marron: {
+    gradient: "linear-gradient(150deg, #7A5240 0%, #5C3D2E 45%, #3E2A1F 100%)",
+    boxShadow: [
+      "inset 3px 3px 4px rgba(255,255,255,0.12)",
+      "inset -3px -3px 5px rgba(0,0,0,0.55)",
+      "inset 6px 6px 12px rgba(255,255,255,0.05)",
+      "inset -6px -6px 14px rgba(0,0,0,0.35)",
+      "0 30px 80px rgba(0,0,0,0.50)",
+      "0 8px 24px rgba(0,0,0,0.32)",
+    ].join(", "),
+    rabbet: [
+      "inset 0 0 0 1.5px rgba(0,0,0,0.45)",
+      "inset 4px 4px 8px rgba(0,0,0,0.38)",
+      "inset -2px -2px 5px rgba(0,0,0,0.20)",
+    ].join(", "),
+    innerShadow: [
+      "inset 0 0 22px rgba(0,0,0,0.48)",
+      "inset 6px 6px 14px rgba(0,0,0,0.55)",
+      "inset -3px -3px 9px rgba(0,0,0,0.30)",
+    ].join(", "),
+    glare: "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.03) 35%, transparent 55%, rgba(0,0,0,0.05) 100%)",
+  },
+  "gris-fonce": {
+    gradient: "linear-gradient(150deg, #636363 0%, #4A4A4A 45%, #333333 100%)",
+    boxShadow: [
+      "inset 3px 3px 4px rgba(255,255,255,0.12)",
+      "inset -3px -3px 5px rgba(0,0,0,0.55)",
+      "inset 6px 6px 12px rgba(255,255,255,0.05)",
+      "inset -6px -6px 14px rgba(0,0,0,0.35)",
+      "0 30px 80px rgba(0,0,0,0.50)",
+      "0 8px 24px rgba(0,0,0,0.32)",
+    ].join(", "),
+    rabbet: [
+      "inset 0 0 0 1.5px rgba(0,0,0,0.45)",
+      "inset 4px 4px 8px rgba(0,0,0,0.38)",
+      "inset -2px -2px 5px rgba(0,0,0,0.20)",
+    ].join(", "),
+    innerShadow: [
+      "inset 0 0 22px rgba(0,0,0,0.48)",
+      "inset 6px 6px 14px rgba(0,0,0,0.55)",
+      "inset -3px -3px 9px rgba(0,0,0,0.30)",
+    ].join(", "),
+    glare: "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.03) 35%, transparent 55%, rgba(0,0,0,0.05) 100%)",
+  },
+  "gris-clair": {
+    gradient: "linear-gradient(150deg, #CCCCCC 0%, #B0B0B0 50%, #9A9A9A 100%)",
+    boxShadow: [
+      "inset 3px 3px 4px rgba(255,255,255,0.60)",
+      "inset -3px -3px 5px rgba(0,0,0,0.18)",
+      "inset 6px 6px 12px rgba(255,255,255,0.30)",
+      "inset -6px -6px 14px rgba(0,0,0,0.10)",
+      "0 30px 80px rgba(0,0,0,0.35)",
+      "0 8px 24px rgba(0,0,0,0.22)",
+    ].join(", "),
+    rabbet: [
+      "inset 0 0 0 1.5px rgba(0,0,0,0.22)",
+      "inset 4px 4px 8px rgba(0,0,0,0.18)",
+      "inset -2px -2px 5px rgba(0,0,0,0.09)",
+    ].join(", "),
+    innerShadow: [
+      "inset 0 0 18px rgba(0,0,0,0.32)",
+      "inset 6px 6px 14px rgba(0,0,0,0.36)",
+      "inset -3px -3px 9px rgba(0,0,0,0.18)",
+    ].join(", "),
+    glare: "linear-gradient(135deg, rgba(255,255,255,0.40) 0%, rgba(255,255,255,0.06) 35%, transparent 55%, rgba(0,0,0,0.03) 100%)",
+  },
+  "or-antique": {
+    gradient: "linear-gradient(150deg, #D4B96A 0%, #C5A55A 45%, #9E8340 100%)",
+    boxShadow: [
+      "inset 3px 3px 4px rgba(255,255,255,0.30)",
+      "inset -3px -3px 5px rgba(0,0,0,0.35)",
+      "inset 6px 6px 12px rgba(255,255,255,0.12)",
+      "inset -6px -6px 14px rgba(0,0,0,0.22)",
+      "0 30px 80px rgba(0,0,0,0.42)",
+      "0 8px 24px rgba(0,0,0,0.28)",
+    ].join(", "),
+    rabbet: [
+      "inset 0 0 0 1.5px rgba(0,0,0,0.32)",
+      "inset 4px 4px 8px rgba(0,0,0,0.28)",
+      "inset -2px -2px 5px rgba(0,0,0,0.14)",
+    ].join(", "),
+    innerShadow: [
+      "inset 0 0 20px rgba(0,0,0,0.40)",
+      "inset 6px 6px 14px rgba(0,0,0,0.45)",
+      "inset -3px -3px 9px rgba(0,0,0,0.24)",
+    ].join(", "),
+    glare: "linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.06) 35%, transparent 55%, rgba(0,0,0,0.04) 100%)",
+  },
+  "argent-antique": {
+    gradient: "linear-gradient(150deg, #C0C1C5 0%, #A8A9AD 45%, #8A8B8F 100%)",
+    boxShadow: [
+      "inset 3px 3px 4px rgba(255,255,255,0.50)",
+      "inset -3px -3px 5px rgba(0,0,0,0.22)",
+      "inset 6px 6px 12px rgba(255,255,255,0.22)",
+      "inset -6px -6px 14px rgba(0,0,0,0.12)",
+      "0 30px 80px rgba(0,0,0,0.38)",
+      "0 8px 24px rgba(0,0,0,0.24)",
+    ].join(", "),
+    rabbet: [
+      "inset 0 0 0 1.5px rgba(0,0,0,0.25)",
+      "inset 4px 4px 8px rgba(0,0,0,0.20)",
+      "inset -2px -2px 5px rgba(0,0,0,0.10)",
+    ].join(", "),
+    innerShadow: [
+      "inset 0 0 18px rgba(0,0,0,0.34)",
+      "inset 6px 6px 14px rgba(0,0,0,0.38)",
+      "inset -3px -3px 9px rgba(0,0,0,0.20)",
+    ].join(", "),
+    glare: "linear-gradient(135deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0.07) 35%, transparent 55%, rgba(0,0,0,0.03) 100%)",
   },
 };
 

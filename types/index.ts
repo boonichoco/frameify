@@ -1,7 +1,7 @@
 export type ArtStyle = "ghibli" | "flat";
 export type FrameSize = "30x30" | "40x40" | "50x70";
 export type FrameFinish = "mat" | "brillant" | "fine-art";
-export type FrameColor = "blanc" | "noir";
+export type FrameColor = "noir" | "blanc" | "naturel" | "marron" | "gris-fonce" | "gris-clair" | "or-antique" | "argent-antique";
 export type Passepartout = "oui" | "non";
 
 export interface FrameOption {

@@ -30,8 +30,14 @@ const FINISHES: { value: FrameFinish; label: string; desc: string }[] = [
 ];
 
 const COLORS: { value: FrameColor; label: string; color: string }[] = [
-  { value: "blanc", label: "Blanc", color: "#F0EDE6" },
   { value: "noir", label: "Noir", color: "#1A1917" },
+  { value: "blanc", label: "Blanc", color: "#F0EDE6" },
+  { value: "naturel", label: "Naturel", color: "#C4A882" },
+  { value: "marron", label: "Marron", color: "#5C3D2E" },
+  { value: "gris-fonce", label: "Gris foncé", color: "#4A4A4A" },
+  { value: "gris-clair", label: "Gris clair", color: "#B0B0B0" },
+  { value: "or-antique", label: "Or antique", color: "#C5A55A" },
+  { value: "argent-antique", label: "Argent", color: "#A8A9AD" },
 ];
 
 // Couleurs fixes — indépendantes du thème — pour un contraste maximal
@@ -169,7 +175,7 @@ export default function ProductConfigurator({ options, onChange, customText, onC
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                       <path
                         d="M2 6l3 3 5-5"
-                        stroke={c.value === "blanc" ? "#1A1917" : "#FFFFFF"}
+                        stroke={["blanc", "gris-clair", "argent-antique"].includes(c.value) ? "#1A1917" : "#FFFFFF"}
                         strokeWidth="1.8"
                         strokeLinecap="round"
                         strokeLinejoin="round"
