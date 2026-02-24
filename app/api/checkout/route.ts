@@ -21,6 +21,10 @@ export async function POST(req: NextRequest) {
     const transformedUrl = isHttpUrl(body.transformedImageUrl) ? body.transformedImageUrl : "";
     const originalUrl = isHttpUrl(body.originalImageUrl) ? body.originalImageUrl : "";
 
+    console.log("[/api/checkout] appUrl:", appUrl);
+    console.log("[/api/checkout] transformedUrl:", transformedUrl ? transformedUrl.slice(0, 80) : "(vide)");
+    console.log("[/api/checkout] originalUrl:", originalUrl ? originalUrl.slice(0, 80) : "(vide)");
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
