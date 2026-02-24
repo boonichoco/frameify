@@ -23,7 +23,9 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
+    console.log("[/api/transform] Appel OpenAI...");
     const pngBuffer = await transformToArtStyle(buffer, file.type);
+    console.log("[/api/transform] OpenAI OK, buffer size:", pngBuffer.length);
 
     // Upload sur Vercel Blob si disponible, sinon fallback data URL
     let url: string;
@@ -45,7 +47,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url });
   } catch (err) {
-    console.error("[/api/transform]", err);
+    console.error("[/api/transform] ERREUR:", err instanceof Error ? err.stack : err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Erreur lors de la transformation" },
       { status: 500 }
