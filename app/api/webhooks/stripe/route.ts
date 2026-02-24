@@ -40,10 +40,9 @@ async function handleOrderCompleted(session: Stripe.Checkout.Session) {
   } | null;
 
   console.log("[webhook] session:", session.id);
-  console.log("[webhook] metadata:", JSON.stringify(metadata));
 
   if (!metadata || !shipping?.address || !customer_details?.email) {
-    console.error("[webhook] Données manquantes", { metadata: !!metadata, shipping: !!shipping?.address, email: !!customer_details?.email });
+    console.error("[webhook] Données manquantes");
     return;
   }
 
@@ -56,9 +55,12 @@ async function handleOrderCompleted(session: Stripe.Checkout.Session) {
     return;
   }
 
-  // Upscale 4× pour impression — si ça échoue, on utilise l'image preview
-  const printImageUrl = await upscaleForPrint(imageUrl, session.id);
-  console.log("[webhook] printImageUrl:", printImageUrl.slice(0, 100));
+  // Upscale 4× + texte personnalisé pour impression
+  const printImageUrl = await upscaleForPrint(
+    imageUrl,
+    session.id,
+    metadata.customText
+  );
 
   // Créer la commande Prodigi
   try {
@@ -90,28 +92,97 @@ async function handleOrderCompleted(session: Stripe.Checkout.Session) {
   }
 }
 
-async function upscaleForPrint(previewUrl: string, sessionId: string): Promise<string> {
+// ── Upscale + text overlay ──────────────────────────────────────────
+
+async function upscaleForPrint(
+  previewUrl: string,
+  sessionId: string,
+  customText?: string
+): Promise<string> {
   try {
     const res = await fetch(previewUrl);
     if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
     const sourceBuffer = Buffer.from(await res.arrayBuffer());
 
     const { width = 1024, height = 1024 } = await sharp(sourceBuffer).metadata();
+    const printW = width * 4;
+    const printH = height * 4;
 
-    const printBuffer = await sharp(sourceBuffer)
-      .resize(width * 4, height * 4, { kernel: "lanczos3" })
-      .png({ quality: 90 })
-      .toBuffer();
+    let pipeline = sharp(sourceBuffer).resize(printW, printH, { kernel: "lanczos3" });
+
+    // Graver le texte personnalisé
+    if (customText?.trim()) {
+      try {
+        const textOverlay = await createTextOverlay(customText.trim(), printW, printH);
+        pipeline = pipeline.composite([{ input: textOverlay, top: 0, left: 0 }]);
+        console.log("[webhook] Text overlay OK");
+      } catch (textErr) {
+        console.warn("[webhook] Text overlay échoué (commande créée sans texte):", textErr instanceof Error ? textErr.message : textErr);
+      }
+    }
+
+    const printBuffer = await pipeline.png().toBuffer();
 
     const { url } = await put(`print-${sessionId}.png`, printBuffer, {
       access: "public",
       contentType: "image/png",
     });
 
-    console.log("[webhook] Upscale OK:", url.slice(0, 80));
+    console.log("[webhook] Upscale OK");
     return url;
   } catch (err) {
     console.warn("[webhook] Upscale échoué, fallback preview:", err instanceof Error ? err.message : err);
     return previewUrl;
   }
+}
+
+// ── SVG text overlay avec police embarquée ──────────────────────────
+
+let fontCache: string | null = null;
+
+async function loadFontBase64(): Promise<string> {
+  if (fontCache) return fontCache;
+  // Récupérer l'URL du fichier .woff2 depuis Google Fonts
+  const cssRes = await fetch(
+    "https://fonts.googleapis.com/css2?family=Titan+One&display=swap",
+    { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" } }
+  );
+  const css = await cssRes.text();
+  const urlMatch = css.match(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)/);
+  if (!urlMatch) throw new Error("Font URL introuvable");
+  const fontRes = await fetch(urlMatch[1]);
+  const buf = Buffer.from(await fontRes.arrayBuffer());
+  fontCache = buf.toString("base64");
+  return fontCache;
+}
+
+async function createTextOverlay(text: string, w: number, h: number): Promise<Buffer> {
+  const fontB64 = await loadFontBase64();
+  const fontSize = Math.round(w * 0.04);
+  const top = Math.round(h * 0.06) + fontSize;
+  const lines = text.split("\n").map((l) => l.trim().toUpperCase()).filter(Boolean);
+  const lineH = fontSize * 1.5;
+
+  const tspans = lines
+    .map((line, i) => `<tspan x="${w / 2}" dy="${i === 0 ? 0 : lineH}">${esc(line)}</tspan>`)
+    .join("");
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
+  <defs>
+    <style>@font-face { font-family: 'T'; src: url('data:font/woff2;base64,${fontB64}') format('woff2'); }</style>
+    <linearGradient id="f" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${Math.round(h * 0.2)}" fill="url(#f)"/>
+  <text font-family="'T',sans-serif" font-size="${fontSize}" fill="#F5F0E8"
+    text-anchor="middle" letter-spacing="${Math.round(fontSize * 0.1)}" y="${top}">${tspans}</text>
+</svg>`;
+
+  return Buffer.from(svg);
+}
+
+function esc(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
